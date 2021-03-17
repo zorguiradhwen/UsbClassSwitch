@@ -19,6 +19,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
+#include "fatfs.h"
+#include "sdio.h"
 #include "tim.h"
 #include "usart.h"
 #include "usb_device.h"
@@ -27,6 +30,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Keyboard.h"
+#include "File_Handling.h"
+#include "printf_override.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,7 +63,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+char buffer[100];
+int indx = 0;
 /* USER CODE END 0 */
 
 /**
@@ -89,11 +95,35 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   MX_TIM7_Init();
+  MX_SDIO_SD_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   Keyboard_init();
+  
+  printf_init();
+  printf("Hello World!\n\r");
+  Mount_SD("/");
+  Format_SD();
+  Check_SD_Space();
+  Create_File("FILE1.TXT");
+  Create_File("FILE2.TXT");
+  Unmount_SD("/");
+
+  for (indx = 0; indx < 15; indx++)
+  {
+	Mount_SD("/");
+	sprintf(buffer, "Hello ---> %d\n", indx);
+	Update_File("FILE1.TXT", buffer);
+	sprintf(buffer, "world ---> %d\n", indx);
+	Update_File("FILE2.TXT", buffer);
+	Unmount_SD("/");
+
+	HAL_Delay(500);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -103,13 +133,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	for(uint8_t i = 0; i<5; i++)
-	{
-		HAL_Delay(1000);
-		Keyboard_write("Hello World!!\n");
-		HAL_Delay(1000);
-		Keyboard_write("Good bye Cruel World!!\n");
-	}
+//	for(uint8_t i = 0; i<5; i++)
+//	{
+//		HAL_Delay(1000);
+//		Keyboard_write("Hello World!!\n");
+//		HAL_Delay(1000);
+//		Keyboard_write("Good bye Cruel World!!\n");
+//	}
 
 	USBD_DeInit(&hUsbDeviceFS);
 

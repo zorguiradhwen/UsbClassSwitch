@@ -21,7 +21,9 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "printf_override.h"
+#include <stdio.h>
+uint8_t rx_echo = 0x00;
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -51,6 +53,7 @@ void MX_USART1_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART1_Init 2 */
+  HAL_UART_Receive_IT(&huart1, &rx_echo, 1);
 
   /* USER CODE END USART1_Init 2 */
 
@@ -115,7 +118,23 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if(huart->Instance == USART1 )
+	{
+		if (rx_echo == '\r')
+		{
+			printf("\n\r");
+		}
+		else
+		{
+			HAL_UART_Transmit(huart, &rx_echo, 1, 0xffff);
+		}
+		HAL_UART_Receive_IT(&huart1, &rx_echo, 1);
+	}
 
+
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
