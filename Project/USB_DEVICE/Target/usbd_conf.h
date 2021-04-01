@@ -81,7 +81,8 @@
 #define USBD_CUSTOM_HID_REPORT_DESC_SIZE     63U
 /*---------- -----------*/
 #define CUSTOM_HID_FS_BINTERVAL     0x5U
-
+/*---------- -----------*/
+#define MSC_MEDIA_PACKET     512U
 /****************************************/
 /* #define for FS and HS identification */
 #define DEVICE_FS 		0

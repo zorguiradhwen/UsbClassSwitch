@@ -32,6 +32,7 @@
 #include "Keyboard.h"
 #include "File_Handling.h"
 #include "printf_override.h"
+#include "UsbClassSwitch.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -141,11 +142,15 @@ int main(void)
 //		Keyboard_write("Good bye Cruel World!!\n");
 //	}
 
-	USBD_DeInit(&hUsbDeviceFS);
+	  UsbClassSwitch_setClass(USB_MSC_CLASS);
+	  HAL_Delay(20000);
+	  UsbClassSwitch_setClass(USB_HID_CLASS);
 
-	HAL_Delay(5000);
-
-	MX_USB_DEVICE_Init();
+	  for (uint8_t i = 0; i<5 ; i++)
+	  {
+		  Keyboard_write("Hello World!\n\r");
+		  Keyboard_write("GoodBye Cruel World!\n\r");
+	  }
 
   }
   /* USER CODE END 3 */

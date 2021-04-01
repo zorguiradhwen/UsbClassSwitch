@@ -26,7 +26,7 @@
 #include "usbd_core.h"
 
 #include "usbd_customhid.h"
-
+#include "usbd_msc.h"
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */

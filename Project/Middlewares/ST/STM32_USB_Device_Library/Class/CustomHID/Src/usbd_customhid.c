@@ -355,8 +355,11 @@ static uint8_t USBD_CUSTOM_HID_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 {
   UNUSED(cfgidx);
   USBD_CUSTOM_HID_HandleTypeDef *hhid;
-
-  hhid = USBD_malloc(sizeof(USBD_CUSTOM_HID_HandleTypeDef));
+  {
+	  static uint32_t mem[(sizeof(USBD_CUSTOM_HID_HandleTypeDef)/4+1)];/* On 32-bit boundary */
+	  hhid = mem;
+  }
+  //hhid = USBD_malloc(sizeof(USBD_CUSTOM_HID_HandleTypeDef));
 
   if (hhid == NULL)
   {
